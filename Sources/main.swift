@@ -21,6 +21,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     mainWindow = MainWindow(frame: projectConfig.windowFrame)
     mainWindow.makeKeyAndOrderFront(nil)
 
+    // Asegurarse de que la aplicación toma el foco
+    NSApp.activate(ignoringOtherApps: true)
+
     // Configurar el menú principal
     let mainMenu = MainMenu()
     NSApplication.shared.mainMenu = mainMenu
