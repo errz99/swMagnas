@@ -12,7 +12,7 @@ class ProjectConfig: NSObject, Codable {
     let appSupportDir = FileManager.default.urls(
       for: .applicationSupportDirectory, in: .userDomainMask
     ).first!
-    let appDir = appSupportDir.appendingPathComponent("MiProyectoMacOS")
+    let appDir = appSupportDir.appendingPathComponent("swMagnas")
     try? FileManager.default.createDirectory(at: appDir, withIntermediateDirectories: true)
     return appDir.appendingPathComponent("config.json")
   }
