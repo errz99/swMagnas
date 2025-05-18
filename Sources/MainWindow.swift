@@ -2,7 +2,7 @@ import Cocoa
 
 class MainWindow: NSWindow {
   init() {
-    // Tamaño y posición de la ventana
+    // Tamaño y posición inicial de la ventana
     let screenSize = NSScreen.main?.frame.size ?? CGSize(width: 800, height: 600)
     let windowSize = CGSize(width: 400, height: 300)
     let windowRect = CGRect(
@@ -22,15 +22,16 @@ class MainWindow: NSWindow {
 
     self.title = "Mi Proyecto macOS"
 
-    // Agregar botón al centro de la ventana
+    // Crear el botón
     let button = NSButton(title: "Haz clic aquí", target: self, action: #selector(buttonClicked))
-    button.frame = CGRect(
-      x: (windowSize.width - 120) / 2,
-      y: (windowSize.height - 30) / 2,
-      width: 120,
-      height: 30
-    )
+    button.translatesAutoresizingMaskIntoConstraints = false  // Habilitar Auto Layout
     self.contentView?.addSubview(button)
+
+    // Configurar restricciones para mantener el botón centrado
+    NSLayoutConstraint.activate([
+      button.centerXAnchor.constraint(equalTo: self.contentView!.centerXAnchor),
+      button.centerYAnchor.constraint(equalTo: self.contentView!.centerYAnchor),
+    ])
   }
 
   @objc func buttonClicked() {
