@@ -7,19 +7,29 @@ import Cocoa
 
 class AppDelegate: NSObject, NSApplicationDelegate {
   var mainWindow: MainWindow!
+  var projectConfig: ProjectConfig!
 
   func applicationDidFinishLaunching(_ notification: Notification) {
+    // Cargar la configuración al iniciar
+    if let loadedConfig = ProjectConfig.load() {
+      projectConfig = loadedConfig
+    } else {
+      projectConfig = ProjectConfig(windowFrame: NSRect(x: 100, y: 100, width: 400, height: 300))
+    }
+
+    // Crear e inicializar la ventana principal con el marco cargado
+    mainWindow = MainWindow(frame: projectConfig.windowFrame)
+    mainWindow.makeKeyAndOrderFront(nil)
+
     // Configurar el menú principal
     let mainMenu = MainMenu()
     NSApplication.shared.mainMenu = mainMenu
-
-    // Crear e inicializar la ventana principal
-    mainWindow = MainWindow()
-    mainWindow.makeKeyAndOrderFront(nil)
   }
 
   func applicationWillTerminate(_ notification: Notification) {
-    // Código para limpiar recursos si es necesario
+    // Guardar la configuración al cerrarse la aplicación
+    projectConfig.windowFrame = mainWindow.frame
+    projectConfig.save()
   }
 }
 
