@@ -20,6 +20,8 @@ class MainWindow: NSWindow {
       defer: false
     )
 
+    let sep: CGFloat = 8
+
     // Configurar título y propiedades de la ventana
     self.title = "untitled - swMagnas"
 
@@ -27,8 +29,8 @@ class MainWindow: NSWindow {
     let topStackView = NSStackView()
     topStackView.orientation = .horizontal
     topStackView.alignment = .centerY
-    topStackView.spacing = 10
-    topStackView.distribution = .fill  // Evitar que el searchField se estire
+    topStackView.spacing = sep
+    topStackView.distribution = .equalCentering
 
     // Agregar elementos al StackView
     let leftTextField = NSTextField(labelWithString: "Izquierda")
@@ -55,15 +57,15 @@ class MainWindow: NSWindow {
     let bottomStackView = NSStackView()
     bottomStackView.orientation = .horizontal
     bottomStackView.alignment = .centerY
-    bottomStackView.spacing = 10
-    bottomStackView.distribution = .fill  // Evitar que el searchField se estire
+    bottomStackView.spacing = sep
+    bottomStackView.distribution = .equalCentering
 
     // Agregar elementos al StackView
-    let leftTextField2 = NSTextField(labelWithString: "Izquierda")
+    let leftTextField2 = NSTextField(labelWithString: "v0.0.1-20250518")
     leftTextField2.alignment = .left
-    let centerTextField = NSTextField(labelWithString: "Center")
+    let centerTextField = NSTextField(labelWithString: "0/0")
     centerTextField.alignment = .center
-    let rightTextField2 = NSTextField(labelWithString: "Derecha")
+    let rightTextField2 = NSTextField(labelWithString: "on:")
     rightTextField2.alignment = .right
 
     bottomStackView.addArrangedSubview(leftTextField2)
@@ -83,27 +85,28 @@ class MainWindow: NSWindow {
     verticalStackView.addArrangedSubview(drawingView)
     verticalStackView.addArrangedSubview(bottomStackView)
 
-    // // Añadir el StackView al contentView
+    // Añadir el StackView al contentView
     self.contentView?.addSubview(verticalStackView)
 
     // Configurar restricciones del StackView (top)
     topStackView.translatesAutoresizingMaskIntoConstraints = false
     NSLayoutConstraint.activate([
-      topStackView.leadingAnchor.constraint(equalTo: self.contentView!.leadingAnchor, constant: 10),
+      topStackView.leadingAnchor.constraint(
+        equalTo: self.contentView!.leadingAnchor, constant: sep),
       topStackView.trailingAnchor.constraint(
-        equalTo: self.contentView!.trailingAnchor, constant: -10),
-      topStackView.topAnchor.constraint(equalTo: self.contentView!.topAnchor, constant: 10),
+        equalTo: self.contentView!.trailingAnchor, constant: -sep),
+      topStackView.topAnchor.constraint(equalTo: self.contentView!.topAnchor, constant: sep),
     ])
 
     // Configurar restricciones del StackView (bottom)
     bottomStackView.translatesAutoresizingMaskIntoConstraints = false
     NSLayoutConstraint.activate([
       bottomStackView.leadingAnchor.constraint(
-        equalTo: self.contentView!.leadingAnchor, constant: 10),
+        equalTo: self.contentView!.leadingAnchor, constant: sep),
       bottomStackView.trailingAnchor.constraint(
-        equalTo: self.contentView!.trailingAnchor, constant: -10),
+        equalTo: self.contentView!.trailingAnchor, constant: -sep),
       bottomStackView.bottomAnchor.constraint(
-        equalTo: self.contentView!.bottomAnchor, constant: -10),
+        equalTo: self.contentView!.bottomAnchor, constant: -sep),
     ])
   }
 }
