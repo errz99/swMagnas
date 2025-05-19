@@ -1,14 +1,39 @@
 import Cocoa
 
+// Declarar una clase o estructura para contener variables globales
+class GlobalState {
+  @MainActor static var drawRect: Bool = false
+}
+
 class DrawingView: NSView {
   override func draw(_ dirtyRect: NSRect) {
     super.draw(dirtyRect)
 
-    // Pintar el fondo de color verde
+    // Pintar el fondo
     let color = NSColor.init(red: 0.98, green: 0.90, blue: 0.85, alpha: 1.0)
     color.setFill()
     bounds.fill()
+
+    if GlobalState.drawRect {
+      drawRectangle()
+    }
   }
+
+  func drawRectangle() {
+    // Crear un rectángulo en el centro del view
+    let rectangle = NSRect(x: bounds.midX - 50, y: bounds.midY - 25, width: 100, height: 50)
+
+    // Obtener el contexto gráfico
+    guard let context = NSGraphicsContext.current?.cgContext else { return }
+
+    // Configurar el color y dibujar el rectángulo
+    context.setFillColor(NSColor.red.cgColor)
+    context.fill(rectangle)
+
+    // Forzar la actualización del view
+    self.needsDisplay = true
+  }
+
 }
 
 // Subclase de NSButton para deshabilitar el foco
@@ -86,7 +111,6 @@ class MainWindow: NSWindow, NSWindowDelegate, NSSearchFieldDelegate {
     searchField.delegate = self
     searchField.alignment = .center
     searchField.target = self
-    // searchField.action = #selector(handleSearchFieldAction(_:))
 
     // Etiquetas de volumen
     let topRightTextField = NSTextField(labelWithString: "Derecha")
@@ -103,7 +127,6 @@ class MainWindow: NSWindow, NSWindowDelegate, NSSearchFieldDelegate {
         equalToConstant: searchField.intrinsicContentSize.height),
     ])
 
-    // topStackView.addView(topLeftTextField, in: .leading)
     topStackView.addView(radioButtonContainer, in: .leading)
     topStackView.addView(searchField, in: .center)
     topStackView.addView(topRightTextField, in: .trailing)
@@ -115,7 +138,7 @@ class MainWindow: NSWindow, NSWindowDelegate, NSSearchFieldDelegate {
     bottomStackView.spacing = sep
     bottomStackView.distribution = .fillEqually
 
-    // Agregar elementos al StackView
+    // Agregar views al StackView
     let bottomLeftTextField = NSTextField(labelWithString: "v0.0.1-20250518")
     bottomLeftTextField.font = NSFont.systemFont(ofSize: 11)
     bottomLeftTextField.alignment = .left
@@ -184,6 +207,9 @@ class MainWindow: NSWindow, NSWindowDelegate, NSSearchFieldDelegate {
   // Sobrescribir el método keyDown para capturar eventos de teclado
   override func keyDown(with event: NSEvent) {
     switch event.keyCode {
+    case 53:  // escape
+      GlobalState.drawRect = false
+      drawingView.setNeedsDisplay(drawingView.bounds)
     case 122:  // F1
       print("F1")
       activateRadioButton(radioButtonAll)
@@ -192,7 +218,7 @@ class MainWindow: NSWindow, NSWindowDelegate, NSSearchFieldDelegate {
     case 99:  // F3
       activateRadioButton(radioButtonFiles)
     default:
-      print("key code: \(event.keyCode)")
+      // print("key code: \(event.keyCode)")
       super.keyDown(with: event)  // Pasar otros eventos al sistema
     }
   }
@@ -228,12 +254,10 @@ class MainWindow: NSWindow, NSWindowDelegate, NSSearchFieldDelegate {
 
   // Método para manejar la acción de Return en searchField
   @objc func handleSearchFieldReturn(_ sender: NSSearchField) {
-    print("Tecla Return detectada en searchField")
     self.makeFirstResponder(self.drawingView)
-  }
 
-  // // Define el método para manejar el evento de pulsar la tecla return
-  // @objc func handleSearchFieldAction(_ sender: NSSearchField) {
-  //   print("Texto del searchField: \(sender.stringValue)")
-  // }
+    // Forzar redibujado de drawingView
+    GlobalState.drawRect = true
+    drawingView.setNeedsDisplay(drawingView.bounds)
+  }
 }
