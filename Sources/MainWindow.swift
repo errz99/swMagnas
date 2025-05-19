@@ -5,7 +5,7 @@ class DrawingView: NSView {
     super.draw(dirtyRect)
 
     // Pintar el fondo de color verde
-    let color = NSColor.init(red: 0.95, green: 0.90, blue: 0.85, alpha: 1.0)
+    let color = NSColor.init(red: 0.98, green: 0.90, blue: 0.85, alpha: 1.0)
     color.setFill()
     bounds.fill()
   }
@@ -30,47 +30,47 @@ class MainWindow: NSWindow {
     topStackView.orientation = .horizontal
     topStackView.alignment = .centerY
     topStackView.spacing = sep
-    topStackView.distribution = .equalCentering
+    topStackView.distribution = .fillEqually
 
     // Agregar elementos al StackView
-    let leftTextField = NSTextField(labelWithString: "Izquierda")
-    leftTextField.alignment = .left
-    let centerSearchField = NSSearchField()
-    centerSearchField.alignment = .center
-    let rightTextField = NSTextField(labelWithString: "Derecha")
-    rightTextField.alignment = .right
+    let topLeftTextField = NSTextField(labelWithString: "All - Dirs - Files")
+    topLeftTextField.alignment = .left
+    let searchField = NSSearchField()
+    searchField.alignment = .center
+    let topRightTextField = NSTextField(labelWithString: "Derecha")
+    topRightTextField.alignment = .right
 
     // Configurar dimensiones por defecto del NSSearchField
-    centerSearchField.translatesAutoresizingMaskIntoConstraints = false
+    searchField.translatesAutoresizingMaskIntoConstraints = false
     NSLayoutConstraint.activate([
-      centerSearchField.widthAnchor.constraint(
-        equalToConstant: centerSearchField.intrinsicContentSize.width + 200),
-      centerSearchField.heightAnchor.constraint(
-        equalToConstant: centerSearchField.intrinsicContentSize.height),
+      searchField.widthAnchor.constraint(
+        equalToConstant: searchField.intrinsicContentSize.width + 220),
+      searchField.heightAnchor.constraint(
+        equalToConstant: searchField.intrinsicContentSize.height),
     ])
 
-    topStackView.addArrangedSubview(leftTextField)
-    topStackView.addArrangedSubview(centerSearchField)
-    topStackView.addArrangedSubview(rightTextField)
+    topStackView.addView(topLeftTextField, in: .leading)
+    topStackView.addView(searchField, in: .center)
+    topStackView.addView(topRightTextField, in: .trailing)
 
     // Crear el StackView horizontal (fila inferior)
     let bottomStackView = NSStackView()
     bottomStackView.orientation = .horizontal
     bottomStackView.alignment = .centerY
     bottomStackView.spacing = sep
-    bottomStackView.distribution = .equalCentering
+    bottomStackView.distribution = .fillEqually
 
     // Agregar elementos al StackView
-    let leftTextField2 = NSTextField(labelWithString: "v0.0.1-20250518")
-    leftTextField2.alignment = .left
-    let centerTextField = NSTextField(labelWithString: "0/0")
-    centerTextField.alignment = .center
-    let rightTextField2 = NSTextField(labelWithString: "on:")
-    rightTextField2.alignment = .right
+    let bottomLeftTextField = NSTextField(labelWithString: "v0.0.1-20250518")
+    bottomLeftTextField.alignment = .left
+    let bottomCenterTextField = NSTextField(labelWithString: "0/0")
+    bottomCenterTextField.alignment = .center
+    let bottomRightTextField = NSTextField(labelWithString: "on:")
+    bottomRightTextField.alignment = .right
 
-    bottomStackView.addArrangedSubview(leftTextField2)
-    bottomStackView.addArrangedSubview(centerTextField)
-    bottomStackView.addArrangedSubview(rightTextField2)
+    bottomStackView.addView(bottomLeftTextField, in: .leading)
+    bottomStackView.addView(bottomCenterTextField, in: .center)
+    bottomStackView.addView(bottomRightTextField, in: .trailing)
 
     // Crear vista de dibujo
     let drawingView = DrawingView()
@@ -81,9 +81,9 @@ class MainWindow: NSWindow {
     verticalStackView.translatesAutoresizingMaskIntoConstraints = false
 
     // Añadir el StackView al contentView
-    verticalStackView.addArrangedSubview(topStackView)
-    verticalStackView.addArrangedSubview(drawingView)
-    verticalStackView.addArrangedSubview(bottomStackView)
+    verticalStackView.addView(topStackView, in: .top)
+    verticalStackView.addView(drawingView, in: .center)
+    verticalStackView.addView(bottomStackView, in: .bottom)
 
     // Añadir el StackView al contentView
     self.contentView?.addSubview(verticalStackView)
