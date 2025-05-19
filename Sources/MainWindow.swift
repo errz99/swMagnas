@@ -18,11 +18,12 @@ class NonFocusableRadioButton: NSButton {
   }
 }
 
-class MainWindow: NSWindow, NSWindowDelegate {
+class MainWindow: NSWindow, NSWindowDelegate, NSSearchFieldDelegate {
   var radioButtonAll: NonFocusableRadioButton!
   var radioButtonDirs: NonFocusableRadioButton!
   var radioButtonFiles: NonFocusableRadioButton!
   var drawingView: DrawingView!
+  var searchField: NSSearchField!
 
   init(frame: NSRect) {
     super.init(
@@ -81,10 +82,11 @@ class MainWindow: NSWindow, NSWindowDelegate {
     radioButtonFiles.action = #selector(setStateForRadioButtons(_:))
 
     // Buscador
-    let searchField = NSSearchField()
+    searchField = NSSearchField()
+    searchField.delegate = self
     searchField.alignment = .center
     searchField.target = self
-    searchField.action = #selector(handleSearchFieldAction(_:))
+    // searchField.action = #selector(handleSearchFieldAction(_:))
 
     // Etiquetas de volumen
     let topRightTextField = NSTextField(labelWithString: "Derecha")
@@ -169,6 +171,16 @@ class MainWindow: NSWindow, NSWindowDelegate {
     ])
   }
 
+  // Método del delegado que responde al evento de redimensionar
+  func windowDidResize(_ notification: Notification) {
+    let width = Int(self.frame.size.width)
+    let height = Int(self.frame.size.height)
+
+    if height % 50 == 0 {
+      print("Dimensiones de la ventana - Width: \(width), Height: \(height)")
+    }
+  }
+
   // Sobrescribir el método keyDown para capturar eventos de teclado
   override func keyDown(with event: NSEvent) {
     switch event.keyCode {
@@ -202,19 +214,26 @@ class MainWindow: NSWindow, NSWindowDelegate {
     sender.state = .on
   }
 
-  // Método del delegado que responde al evento de redimensionar
-  func windowDidResize(_ notification: Notification) {
-    let width = Int(self.frame.size.width)
-    let height = Int(self.frame.size.height)
-
-    if height % 50 == 0 {
-      print("Dimensiones de la ventana - Width: \(width), Height: \(height)")
+  // Método delegado para capturar eventos del teclado en searchField
+  func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector)
+    -> Bool
+  {
+    if control == searchField && commandSelector == #selector(NSResponder.insertNewline(_:)) {
+      // La tecla Return ha sido presionada
+      handleSearchFieldReturn(searchField)
+      return true  // Consumimos el evento para evitar que otros lo procesen
     }
+    return false  // Permitir que otros eventos se procesen normalmente
   }
 
-  // Define el método para manejar el evento de pulsar la tecla return
-  @objc func handleSearchFieldAction(_ sender: NSSearchField) {
-    print("Texto del searchField: \(sender.stringValue)")
+  // Método para manejar la acción de Return en searchField
+  @objc func handleSearchFieldReturn(_ sender: NSSearchField) {
+    print("Tecla Return detectada en searchField")
     self.makeFirstResponder(self.drawingView)
   }
+
+  // // Define el método para manejar el evento de pulsar la tecla return
+  // @objc func handleSearchFieldAction(_ sender: NSSearchField) {
+  //   print("Texto del searchField: \(sender.stringValue)")
+  // }
 }
