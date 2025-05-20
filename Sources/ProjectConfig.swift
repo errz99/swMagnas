@@ -1,10 +1,23 @@
 import Cocoa
 
+enum Language: Codable {
+  case english
+  case spanish
+}
+
 class ProjectConfig: NSObject, Codable {
   var windowFrame: NSRect
+  var language: Language
+  var lastDataFile: String?
+  var loadLast: Bool
+  var defaultDataDir: String?
 
-  init(windowFrame: NSRect) {
-    self.windowFrame = windowFrame
+  override init() {
+    self.windowFrame = NSRect(x: 100, y: 100, width: 400, height: 300)
+    self.language = .english
+    self.lastDataFile = nil
+    self.loadLast = false
+    self.defaultDataDir = nil
   }
 
   // Ruta estándar para guardar la configuración del proyecto

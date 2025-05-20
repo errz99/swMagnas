@@ -10,7 +10,7 @@ class DrawingView: NSView {
     super.draw(dirtyRect)
 
     // Pintar el fondo
-    let color = NSColor.init(red: 0.98, green: 0.90, blue: 0.85, alpha: 1.0)
+    let color = NSColor.init(red: 0.95, green: 0.88, blue: 0.80, alpha: 1.0)
     color.setFill()
     bounds.fill()
 
@@ -31,7 +31,7 @@ class DrawingView: NSView {
     context.fill(rectangle)
 
     // Forzar la actualización del view
-    self.needsDisplay = true
+    needsDisplay = true
   }
 
 }
@@ -232,9 +232,9 @@ class MainWindow: NSWindow, NSWindowDelegate, NSSearchFieldDelegate {
   // Método para manejar el cambio de estado de los radio buttons
   @objc func setStateForRadioButtons(_ sender: NonFocusableRadioButton) {
     // Desactivar todos los botones primero
-    self.radioButtonAll.state = .off
-    self.radioButtonDirs.state = .off
-    self.radioButtonFiles.state = .off
+    radioButtonAll.state = .off
+    radioButtonDirs.state = .off
+    radioButtonFiles.state = .off
 
     // Activar únicamente el botón seleccionado
     sender.state = .on
@@ -254,7 +254,7 @@ class MainWindow: NSWindow, NSWindowDelegate, NSSearchFieldDelegate {
 
   // Método para manejar la acción de Return en searchField
   @objc func handleSearchFieldReturn(_ sender: NSSearchField) {
-    self.makeFirstResponder(self.drawingView)
+    self.makeFirstResponder(drawingView)
 
     // Forzar redibujado de drawingView
     GlobalState.drawRect = true

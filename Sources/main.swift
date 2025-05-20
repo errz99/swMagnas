@@ -14,7 +14,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     if let loadedConfig = ProjectConfig.load() {
       projectConfig = loadedConfig
     } else {
-      projectConfig = ProjectConfig(windowFrame: NSRect(x: 100, y: 100, width: 400, height: 300))
+      projectConfig = ProjectConfig()
     }
 
     // Crear e inicializar la ventana principal con el marco cargado
@@ -31,7 +31,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
   func applicationWillTerminate(_ notification: Notification) {
     // Guardar la configuración al cerrarse la aplicación
-    projectConfig.windowFrame = mainWindow.frame
+    let frame = mainWindow.frame
+    let myFrame = NSRect.init(
+      x: frame.minX, y: frame.minY, width: frame.width, height: frame.height - 28)
+    projectConfig.windowFrame = myFrame
     projectConfig.save()
   }
 }
