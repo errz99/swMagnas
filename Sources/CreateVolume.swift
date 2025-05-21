@@ -75,16 +75,10 @@ class CreateVolumeDialog: NSWindow {
 
         // Ajustar las restricciones
         NSLayoutConstraint.activate([
-            gridView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
-            gridView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
-            containerView.leadingAnchor.constraint(
-                equalTo: contentView!.leadingAnchor, constant: 20
-            ),
-            containerView.trailingAnchor.constraint(
-                equalTo: contentView!.trailingAnchor, constant: -20
-            ),
-            containerView.topAnchor.constraint(equalTo: contentView!.topAnchor, constant: 20),
-            containerView.bottomAnchor.constraint(equalTo: contentView!.bottomAnchor, constant: -20)
+            gridView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 10),
+            gridView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10),
+            gridView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 10),
+            buttonStack.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10)
         ])
     }
 
