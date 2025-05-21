@@ -35,6 +35,48 @@ class MainMenu: NSMenu {
     )
     openFileMenuItem.target = self
     fileMenu.addItem(openFileMenuItem)
+
+    // Crear el menú "Data"
+    let dataMenuItem = NSMenuItem()
+    self.addItem(dataMenuItem)
+
+    let dataMenu = NSMenu(title: "Data")
+    dataMenuItem.submenu = dataMenu
+
+    // Agregar ítems al menú "Data"
+    let createVolumeMenuItem = NSMenuItem(
+      title: "Create Volume",
+      action: #selector(createVolume),
+      keyEquivalent: "n"
+    )
+    createVolumeMenuItem.target = self
+    dataMenu.addItem(createVolumeMenuItem)
+
+    let editVolumeMenuItem = NSMenuItem(
+      title: "Edit Volume",
+      action: #selector(editVolume),
+      keyEquivalent: "d"
+    )
+    editVolumeMenuItem.target = self
+    dataMenu.addItem(editVolumeMenuItem)
+
+    let removeVolumeMenuItem = NSMenuItem(
+      title: "Remove Volume",
+      action: #selector(removeVolume),
+      keyEquivalent: ""
+    )
+    removeVolumeMenuItem.target = self
+    dataMenu.addItem(removeVolumeMenuItem)
+
+    dataMenu.addItem(NSMenuItem.separator())
+
+    let scanVolumeMenuItem = NSMenuItem(
+      title: "Scan Volume",
+      action: #selector(scanVolume),
+      keyEquivalent: "k"
+    )
+    scanVolumeMenuItem.target = self
+    dataMenu.addItem(scanVolumeMenuItem)
   }
 
   required init(coder: NSCoder) {
@@ -58,4 +100,23 @@ class MainMenu: NSMenu {
       print("No se seleccionó ningún archivo.")
     }
   }
+
+  // Acciones para los ítems del menú "Data"
+  @objc @MainActor func createVolume() {
+    let dialog = CreateVolumeDialog()
+    NSApp.runModal(for: dialog)
+  }
+
+  @objc func editVolume() {
+    print("Edit Volume action triggered")
+  }
+
+  @objc func removeVolume() {
+    print("Remove Volume action triggered")
+  }
+
+  @objc func scanVolume() {
+    print("Scan Volume action triggered")
+  }
+
 }

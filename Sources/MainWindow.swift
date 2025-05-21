@@ -7,7 +7,7 @@ class GlobalState {
 
 class DrawingView: NSView {
   override func draw(_ dirtyRect: NSRect) {
-    super.draw(dirtyRect)
+    // super.draw(dirtyRect)
 
     // Pintar el fondo
     let color = NSColor.init(red: 0.95, green: 0.88, blue: 0.80, alpha: 1.0)
@@ -62,7 +62,7 @@ class MainWindow: NSWindow, NSWindowDelegate, NSSearchFieldDelegate {
     // Configura el delegado de la ventana
     self.delegate = self
 
-    let sep: CGFloat = 8
+    let sep: CGFloat = 10
     let textColor = NSColor.init(red: 0.3, green: 0.7, blue: 0.3, alpha: 1.0)
 
     // Configurar título y propiedades de la ventana
@@ -210,8 +210,8 @@ class MainWindow: NSWindow, NSWindowDelegate, NSSearchFieldDelegate {
     case 53:  // escape
       GlobalState.drawRect = false
       drawingView.setNeedsDisplay(drawingView.bounds)
+      self.makeFirstResponder(searchField)
     case 122:  // F1
-      print("F1")
       activateRadioButton(radioButtonAll)
     case 120:  // F2
       activateRadioButton(radioButtonDirs)
