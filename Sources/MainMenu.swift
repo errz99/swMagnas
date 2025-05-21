@@ -1,6 +1,8 @@
 import Cocoa
 
 class MainMenu: NSMenu {
+  var createVolumeDialog: CreateVolumeDialog?
+
   init() {
     super.init(title: "MainMenu")
 
@@ -101,10 +103,19 @@ class MainMenu: NSMenu {
     }
   }
 
-  // Acciones para los ítems del menú "Data"
   @objc @MainActor func createVolume() {
-    let dialog = CreateVolumeDialog()
-    NSApp.runModal(for: dialog)
+    if let mainWindow = NSApp.mainWindow {
+
+      if let dialog = createVolumeDialog {
+        NSApp.runModal(for: dialog)
+      } else {
+        createVolumeDialog = CreateVolumeDialog(parentWindow: mainWindow)
+        NSApp.runModal(for: createVolumeDialog!)
+        // createVolumeDialog = nil // Liberar la referencia manualmente
+      }
+    } else {
+      print("No main window found")
+    }
   }
 
   @objc func editVolume() {

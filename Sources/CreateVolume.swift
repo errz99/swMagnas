@@ -1,15 +1,25 @@
 import Cocoa
 
 class CreateVolumeDialog: NSWindow {
-  init() {
+  var nameField: NSTextField!
+  var volumeField: NSTextField!
+  var foldersField: NSTextField!
+
+  init(parentWindow: NSWindow) {
     super.init(
-      contentRect: NSRect(x: 0, y: 0, width: 400, height: 200),
+      contentRect: NSRect(x: 0, y: 0, width: 400, height: 0),
       styleMask: [.titled, .closable, .resizable],
       backing: .buffered,
       defer: false
     )
     self.title = "Create Volume"
-    self.center()
+
+    // Centrar el diálogo en la ventana principal
+    if let parentFrame = parentWindow.screen?.visibleFrame {
+      let x = parentFrame.origin.x + (parentFrame.width - self.frame.width) / 2
+      let y = parentFrame.origin.y + (parentFrame.height - self.frame.height) / 2
+      self.setFrameOrigin(NSPoint(x: x, y: y))
+    }
 
     // Crear un grid view para las etiquetas y campos de texto
     let gridView = NSGridView()
@@ -18,22 +28,26 @@ class CreateVolumeDialog: NSWindow {
     gridView.columnSpacing = 10
 
     // Primera fila
-    let label1 = NSTextField(labelWithString: "Field 1:")
-    label1.alignment = .right
-    let textField1 = NSTextField()
-    gridView.addRow(with: [label1, textField1])
+    let nameLabel = NSTextField(labelWithString: "Name:")
+    nameLabel.alignment = .right
+    nameField = NSTextField()
+    gridView.addRow(with: [nameLabel, nameField])
 
     // Segunda fila
-    let label2 = NSTextField(labelWithString: "Field 2:")
-    label2.alignment = .right
-    let textField2 = NSTextField()
-    gridView.addRow(with: [label2, textField2])
+    let volumeLabel = NSTextField(labelWithString: "Volume:")
+    volumeLabel.alignment = .right
+    volumeField = NSTextField()
+    let volumeButton = NSButton(
+      title: "Volume ", target: self, action: #selector(volumeButtonPressed))
+    gridView.addRow(with: [volumeLabel, volumeField, volumeButton])
 
     // Tercera fila
-    let label3 = NSTextField(labelWithString: "Field 3:")
-    label3.alignment = .right
-    let textField3 = NSTextField()
-    gridView.addRow(with: [label3, textField3])
+    let foldersLabel = NSTextField(labelWithString: "Folders:")
+    foldersLabel.alignment = .right
+    foldersField = NSTextField()
+    let foldersButton = NSButton(
+      title: "Folders", target: self, action: #selector(foldersButtonPressed))
+    gridView.addRow(with: [foldersLabel, foldersField, foldersButton])
 
     // Botones
     let okButton = NSButton(title: "OK", target: self, action: #selector(okButtonPressed))
@@ -42,7 +56,8 @@ class CreateVolumeDialog: NSWindow {
     let buttonStack = NSStackView(views: [okButton, cancelButton])
     buttonStack.orientation = .horizontal
     buttonStack.spacing = 10
-    buttonStack.alignment = .centerX
+    buttonStack.alignment = .centerY
+    buttonStack.distribution = .equalSpacing
 
     // Contenedor principal
     let containerView = NSStackView(views: [gridView, buttonStack])
@@ -67,13 +82,76 @@ class CreateVolumeDialog: NSWindow {
     ])
   }
 
+  func chooseDirectory(multi: Bool) -> String? {
+    let dialog = NSOpenPanel()
+    dialog.title = "Choose a Volume"
+    dialog.showsResizeIndicator = true
+    dialog.showsHiddenFiles = false
+    dialog.canChooseFiles = false
+    dialog.canChooseDirectories = true
+    if multi {
+      dialog.allowsMultipleSelection = true
+    }
+
+    if dialog.runModal() == .OK {
+      if let result = dialog.url {
+        if multi {
+          return result.lastPathComponent
+        } else {
+          return result.path
+        }
+      }
+    }
+    return nil
+  }
+
+  func cleanTextFields() {
+    nameField.stringValue = ""
+    volumeField.stringValue = ""
+    foldersField.stringValue = ""
+  }
+
+  // Manejar la tecla Escape para cerrar el diálogo
+  override func performKeyEquivalent(with event: NSEvent) -> Bool {
+    if event.type == .keyDown && event.keyCode == 53 {
+      self.cancelButtonPressed()
+      return true
+    }
+    return super.performKeyEquivalent(with: event)
+  }
+
+  @objc func volumeButtonPressed() {
+    if let result = chooseDirectory(multi: false) {
+      volumeField.stringValue = result
+    }
+  }
+
+  @objc func foldersButtonPressed() {
+    if let result = chooseDirectory(multi: true) {
+      let value = foldersField.stringValue + result + ", "
+      foldersField.stringValue = value
+    }
+  }
+
   @objc func okButtonPressed() {
-    print("OK button pressed")
+    let name = nameField.stringValue
+    let volume = volumeField.stringValue
+    let folders = foldersField.stringValue
+
+    print("OK button name: \(name)")
+    print("OK button volume: \(volume)")
+    print("OK button folders: \(folders)")
+
+    cleanTextFields()
     NSApp.stopModal()
+    self.orderOut(nil)
   }
 
   @objc func cancelButtonPressed() {
     print("Cancel button pressed")
+
+    cleanTextFields()
     NSApp.stopModal()
+    self.orderOut(nil)
   }
 }
