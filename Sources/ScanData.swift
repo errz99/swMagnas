@@ -2,24 +2,26 @@ import Cocoa
 
 struct OneFile {
     var name: String
-    // var nameLow: String
+    var nameLow: String
     // var line: String
     // var path: String
     var len: UInt64 = 0
 
     init(name: String, len: UInt64) {
         self.name = name
+        nameLow = name.lowercased()
     }
 }
 
 struct OneDir {
     var name: String
-    // var nameLow: String
+    var nameLow: String
     // var path: String
     var len: UInt64 = 0
 
     init(name: String) {
         self.name = name
+        nameLow = name.lowercased()
     }
 }
 
@@ -48,7 +50,7 @@ class OneVolume: Codable {
     var dirsFiltered: UInt64 = 0
     var filesFiltered: UInt64 = 0
 
-    init(name: String, path: String, flist: String) {
+    init(_ name: String, _ path: String, _ flist: String) {
         self.name = name
         self.path = path
     }

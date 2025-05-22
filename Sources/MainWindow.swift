@@ -1,14 +1,5 @@
 import Cocoa
 
-// Declarar una clase o estructura para contener variables globales
-class GlobalState {
-    static let appNameForTitle: String = " - swMagnas"
-
-    @MainActor static var drawRect: Bool = false
-    @MainActor static var configChanged: Bool = false
-    @MainActor static var dataChanged: Bool = false
-}
-
 class DrawingView: NSView {
     override func draw(_: NSRect) {
         // Pintar el fondo
@@ -61,6 +52,7 @@ class MainWindow: NSWindow, NSWindowDelegate, NSSearchFieldDelegate {
 
         // Configura el delegado de la ventana
         delegate = self
+        GlobalState.mainWindow = self
 
         let sep: CGFloat = 10
         let textColor = NSColor(red: 0.3, green: 0.7, blue: 0.3, alpha: 1.0)

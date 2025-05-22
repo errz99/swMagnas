@@ -144,6 +144,13 @@ class MainMenu: NSMenu {
         // Guarda el fichero de datos activo
         if let lastDataFile = config.lastDataFile {
             scanData.save(url: lastDataFile)
+
+            if GlobalState.dataChanged {
+                GlobalState.dataChanged = false
+                if let mainWindow = GlobalState.mainWindow {
+                    mainWindow.title = lastDataFile.lastPathComponent + GlobalState.appNameForTitle
+                }
+            }
         }
     }
 
@@ -173,7 +180,7 @@ class MainMenu: NSMenu {
             if let dialog = createVolumeDialog {
                 NSApp.runModal(for: dialog)
             } else {
-                createVolumeDialog = CreateVolumeDialog(parentWindow: mainWindow)
+                createVolumeDialog = CreateVolumeDialog(parentWindow: mainWindow, data: scanData)
                 NSApp.runModal(for: createVolumeDialog!)
                 // createVolumeDialog = nil // Liberar la referencia manualmente
             }
