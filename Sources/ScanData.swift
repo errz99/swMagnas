@@ -1,6 +1,6 @@
 import Cocoa
 
-struct OneFile: Codable {
+struct OneFile {
     var name: String
     // var nameLow: String
     // var line: String
@@ -12,7 +12,7 @@ struct OneFile: Codable {
     }
 }
 
-struct OneDir: Codable {
+struct OneDir {
     var name: String
     // var nameLow: String
     // var path: String
@@ -55,7 +55,11 @@ class OneVolume: Codable {
 }
 
 class ScanData: Codable {
-    var volumes: [OneVolume] = []
+    var volumes: [OneVolume]
+
+    init() {
+        volumes = []
+    }
 
     // Guardar scan data en un archivo JSON
     func save(path: String) {
@@ -65,9 +69,9 @@ class ScanData: Codable {
             encoder.outputFormatting = .prettyPrinted
             let data = try encoder.encode(self)
             try data.write(to: dataPath)
-            print("Configuración guardada en: \(dataPath)")
+            print("Datos guardados en: \(dataPath)")
         } catch {
-            print("Error al guardar la configuración: \(error)")
+            print("Error al guardar los datos: \(error)")
         }
     }
 
@@ -79,7 +83,7 @@ class ScanData: Codable {
             let decoder = JSONDecoder()
             return try decoder.decode(ScanData.self, from: data)
         } catch {
-            print("No se pudo cargar la configuración: \(error)")
+            print("No se pudieron cargar los datos: \(error)")
             return nil
         }
     }

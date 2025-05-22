@@ -2,9 +2,13 @@ import Cocoa
 
 class MainMenu: NSMenu {
     var createVolumeDialog: CreateVolumeDialog?
+    var config: ProjectConfig!
+    var scanData: ScanData!
 
-    init() {
+    init(_ config: ProjectConfig, _ scanData: ScanData) {
         super.init(title: "MainMenu")
+        self.config = config
+        self.scanData = scanData
 
         // Crear el menú principal
         let mainAppMenu = NSMenuItem()
@@ -29,14 +33,35 @@ class MainMenu: NSMenu {
         let fileMenu = NSMenu(title: "File")
         fileMenuItem.submenu = fileMenu
 
-        // Agregar "Open File" al menú "File"
+        // Agregar items al menú "File"
         let openFileMenuItem = NSMenuItem(
-            title: "Open File",
+            title: "Open",
             action: #selector(openFile),
             keyEquivalent: "o"
         )
         openFileMenuItem.target = self
         fileMenu.addItem(openFileMenuItem)
+
+        fileMenu.addItem(NSMenuItem.separator())
+
+        // Agregar "Save" al menú "File"
+        let saveMenuItem = NSMenuItem(
+            title: "Save",
+            action: #selector(saveFile),
+            keyEquivalent: "s"
+        )
+        saveMenuItem.target = self
+        fileMenu.addItem(saveMenuItem)
+
+        // Agregar "Save As" al menú "File"
+        let saveAsMenuItem = NSMenuItem(
+            title: "Save As",
+            action: #selector(saveFileAs),
+            keyEquivalent: "S"
+        )
+        saveAsMenuItem.keyEquivalentModifierMask = [.shift, .command]
+        saveAsMenuItem.target = self
+        fileMenu.addItem(saveAsMenuItem)
 
         // Crear el menú "Data"
         let dataMenuItem = NSMenuItem()
@@ -98,9 +123,44 @@ class MainMenu: NSMenu {
         if dialog.runModal() == .OK {
             if let result = dialog.url {
                 print("Archivo seleccionado: \(result.path)")
+                if let sc = ScanData.load(path: result.path) {
+                    scanData = sc
+                    config.lastDataFile = result.path
+                    GlobalState.configChanged = true
+                    print("data loaded with volumes count: \(scanData.volumes.count)")
+                } else {
+                    print("data not loaded")
+                }
             }
         } else {
             print("No se seleccionó ningún archivo.")
+        }
+    }
+
+    // Acción para "Save"
+    @objc @MainActor func saveFile() {
+        // Guarda el fichero de datos activo
+        if let lastDataFile = config.lastDataFile {
+            scanData.save(path: lastDataFile)
+        }
+    }
+
+    // Acción para "Save As"
+    @objc @MainActor func saveFileAs() {
+        let dialog = NSSavePanel()
+        dialog.title = "Save As"
+        dialog.showsResizeIndicator = true
+        dialog.canCreateDirectories = true
+        dialog.showsHiddenFiles = false
+
+        if dialog.runModal() == .OK {
+            if let result = dialog.url {
+                config.lastDataFile = result.path
+                GlobalState.configChanged = true
+                print("Archivo guardado: \(result.path)")
+            }
+        } else {
+            print("No se guardó ningun archivo.")
         }
     }
 

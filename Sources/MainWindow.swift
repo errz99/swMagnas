@@ -3,6 +3,8 @@ import Cocoa
 // Declarar una clase o estructura para contener variables globales
 class GlobalState {
     @MainActor static var drawRect: Bool = false
+    @MainActor static var configChanged: Bool = false
+    @MainActor static var dataChanged: Bool = false
 }
 
 class DrawingView: NSView {

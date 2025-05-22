@@ -15,8 +15,8 @@ class ProjectConfig: NSObject, Codable {
     override init() {
         windowFrame = NSRect(x: 100, y: 100, width: 400, height: 300)
         language = .english
-        lastDataFile = nil
-        loadLast = false
+        lastDataFile = "/Users/arigar/swmagnas.json"
+        loadLast = true
         defaultDataDir = nil
     }
 

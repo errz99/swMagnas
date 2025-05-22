@@ -7,6 +7,7 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate {
     var mainWindow: MainWindow!
     var projectConfig: ProjectConfig!
+    var scanData: ScanData! = .init()
 
     func applicationDidFinishLaunching(_: Notification) {
         // Cargar la configuración al iniciar
@@ -14,6 +15,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             projectConfig = loadedConfig
         } else {
             projectConfig = ProjectConfig()
+        }
+
+        // Cargar scan data al iniciar
+        if projectConfig.loadLast {
+            if let lastData = projectConfig.lastDataFile {
+                if let sc = ScanData.load(path: lastData) {
+                    scanData = sc
+                    print("data loaded with volumes count: \(scanData.volumes.count)")
+                } else {
+                    print("data not loaded")
+                }
+            } else {
+                print("no last data file available")
+            }
         }
 
         // Crear e inicializar la ventana principal con el marco cargado
@@ -24,7 +39,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.activate(ignoringOtherApps: true)
 
         // Configurar el menú principal
-        let mainMenu = MainMenu()
+        let mainMenu = MainMenu(projectConfig, scanData)
         NSApplication.shared.mainMenu = mainMenu
     }
 
@@ -34,8 +49,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let myFrame = NSRect(
             x: frame.minX, y: frame.minY, width: frame.width, height: frame.height - 28
         )
-        projectConfig.windowFrame = myFrame
-        projectConfig.save()
+        if myFrame != projectConfig.windowFrame || GlobalState.configChanged {
+            projectConfig.windowFrame = myFrame
+            projectConfig.save()
+        }
     }
 }
 
