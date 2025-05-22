@@ -4,11 +4,13 @@ class MainMenu: NSMenu {
     var createVolumeDialog: CreateVolumeDialog?
     var config: ProjectConfig!
     var scanData: ScanData!
+    var mainWindow: MainWindow!
 
-    init(_ config: ProjectConfig, _ scanData: ScanData) {
+    init(_ window: MainWindow, _ config: ProjectConfig, _ scanData: ScanData) {
         super.init(title: "MainMenu")
         self.config = config
         self.scanData = scanData
+        mainWindow = window
 
         // Crear el menú principal
         let mainAppMenu = NSMenuItem()
@@ -122,11 +124,11 @@ class MainMenu: NSMenu {
 
         if dialog.runModal() == .OK {
             if let result = dialog.url {
-                print("Archivo seleccionado: \(result.path)")
-                if let sc = ScanData.load(path: result.path) {
+                if let sc = ScanData.load(url: result.absoluteURL) {
                     scanData = sc
-                    config.lastDataFile = result.path
+                    config.lastDataFile = result.absoluteURL
                     GlobalState.configChanged = true
+                    mainWindow.title = result.lastPathComponent + GlobalState.appNameForTitle
                     print("data loaded with volumes count: \(scanData.volumes.count)")
                 } else {
                     print("data not loaded")
@@ -141,7 +143,7 @@ class MainMenu: NSMenu {
     @objc @MainActor func saveFile() {
         // Guarda el fichero de datos activo
         if let lastDataFile = config.lastDataFile {
-            scanData.save(path: lastDataFile)
+            scanData.save(url: lastDataFile)
         }
     }
 
@@ -155,8 +157,10 @@ class MainMenu: NSMenu {
 
         if dialog.runModal() == .OK {
             if let result = dialog.url {
-                config.lastDataFile = result.path
+                scanData.save(url: result)
+                config.lastDataFile = result.absoluteURL
                 GlobalState.configChanged = true
+                mainWindow.title = result.lastPathComponent + GlobalState.appNameForTitle
                 print("Archivo guardado: \(result.path)")
             }
         } else {

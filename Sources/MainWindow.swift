@@ -2,6 +2,8 @@ import Cocoa
 
 // Declarar una clase o estructura para contener variables globales
 class GlobalState {
+    static let appNameForTitle: String = " - swMagnas"
+
     @MainActor static var drawRect: Bool = false
     @MainActor static var configChanged: Bool = false
     @MainActor static var dataChanged: Bool = false
@@ -9,8 +11,6 @@ class GlobalState {
 
 class DrawingView: NSView {
     override func draw(_: NSRect) {
-        // super.draw(dirtyRect)
-
         // Pintar el fondo
         let color = NSColor(red: 0.95, green: 0.88, blue: 0.80, alpha: 1.0)
         color.setFill()
@@ -66,7 +66,7 @@ class MainWindow: NSWindow, NSWindowDelegate, NSSearchFieldDelegate {
         let textColor = NSColor(red: 0.3, green: 0.7, blue: 0.3, alpha: 1.0)
 
         // Configurar título y propiedades de la ventana
-        title = "untitled - swMagnas"
+        title = "untitled" + GlobalState.appNameForTitle
 
         // Crear el StackView horizontal (fila superior)
         let topStackView = NSStackView()

@@ -7,7 +7,7 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate {
     var mainWindow: MainWindow!
     var projectConfig: ProjectConfig!
-    var scanData: ScanData! = .init()
+    var scanData: ScanData = .init()
 
     func applicationDidFinishLaunching(_: Notification) {
         // Cargar la configuración al iniciar
@@ -18,10 +18,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         // Cargar scan data al iniciar
+        var updateTitle = false
         if projectConfig.loadLast {
             if let lastData = projectConfig.lastDataFile {
-                if let sc = ScanData.load(path: lastData) {
+                if let sc = ScanData.load(url: lastData) {
                     scanData = sc
+                    updateTitle = true
                     print("data loaded with volumes count: \(scanData.volumes.count)")
                 } else {
                     print("data not loaded")
@@ -35,11 +37,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         mainWindow = MainWindow(frame: projectConfig.windowFrame)
         mainWindow.makeKeyAndOrderFront(nil)
 
+        if updateTitle {
+            if let lastDataFile = projectConfig.lastDataFile {
+                mainWindow.title = lastDataFile.lastPathComponent + GlobalState.appNameForTitle
+            }
+        }
+
         // Asegurarse de que la aplicación toma el foco
         NSApp.activate(ignoringOtherApps: true)
 
         // Configurar el menú principal
-        let mainMenu = MainMenu(projectConfig, scanData)
+        let mainMenu = MainMenu(mainWindow, projectConfig, scanData)
         NSApplication.shared.mainMenu = mainMenu
     }
 

@@ -8,14 +8,14 @@ enum Language: Codable {
 class ProjectConfig: NSObject, Codable {
     var windowFrame: NSRect
     var language: Language
-    var lastDataFile: String?
+    var lastDataFile: URL?
     var loadLast: Bool
-    var defaultDataDir: String?
+    var defaultDataDir: URL?
 
     override init() {
         windowFrame = NSRect(x: 100, y: 100, width: 400, height: 300)
         language = .english
-        lastDataFile = "/Users/arigar/swmagnas.json"
+        lastDataFile = nil
         loadLast = true
         defaultDataDir = nil
     }

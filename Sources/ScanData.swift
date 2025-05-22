@@ -62,24 +62,22 @@ class ScanData: Codable {
     }
 
     // Guardar scan data en un archivo JSON
-    func save(path: String) {
+    func save(url: URL) {
         do {
-            let dataPath = URL(fileURLWithPath: path)
             let encoder = JSONEncoder()
             encoder.outputFormatting = .prettyPrinted
             let data = try encoder.encode(self)
-            try data.write(to: dataPath)
-            print("Datos guardados en: \(dataPath)")
+            try data.write(to: url)
+            print("Datos guardados en: \(url.absoluteString)")
         } catch {
             print("Error al guardar los datos: \(error)")
         }
     }
 
     // Cargar la configuración desde un archivo JSON
-    static func load(path: String) -> ScanData? {
+    static func load(url: URL) -> ScanData? {
         do {
-            let dataPath = URL(fileURLWithPath: path)
-            let data = try Data(contentsOf: dataPath)
+            let data = try Data(contentsOf: url)
             let decoder = JSONDecoder()
             return try decoder.decode(ScanData.self, from: data)
         } catch {
