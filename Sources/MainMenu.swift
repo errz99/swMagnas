@@ -176,16 +176,12 @@ class MainMenu: NSMenu {
     }
 
     @objc @MainActor func createVolume() {
-        if let mainWindow = NSApp.mainWindow {
-            if let dialog = createVolumeDialog {
-                NSApp.runModal(for: dialog)
-            } else {
-                createVolumeDialog = CreateVolumeDialog(parentWindow: mainWindow, data: scanData)
-                NSApp.runModal(for: createVolumeDialog!)
-                // createVolumeDialog = nil // Liberar la referencia manualmente
-            }
+        if let dialog = createVolumeDialog {
+            NSApp.runModal(for: dialog)
         } else {
-            print("No main window found")
+            createVolumeDialog = CreateVolumeDialog(config, data: scanData)
+            NSApp.runModal(for: createVolumeDialog!)
+            // createVolumeDialog = nil // Liberar la referencia manualmente
         }
     }
 

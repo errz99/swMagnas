@@ -42,9 +42,9 @@ class MainWindow: NSWindow, NSWindowDelegate, NSSearchFieldDelegate {
     var drawingView: DrawingView!
     var searchField: NSSearchField!
 
-    init(frame: NSRect) {
+    init(_ config: ProjectConfig) {
         super.init(
-            contentRect: frame,
+            contentRect: config.windowFrames[0],
             styleMask: [.titled, .closable, .resizable, .miniaturizable],
             backing: .buffered,
             defer: false

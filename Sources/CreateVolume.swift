@@ -5,47 +5,18 @@ class CreateVolumeDialog: NSWindow {
     var volumeField: NSTextField!
     var foldersField: NSTextField!
     var scanData: ScanData!
+    var config: ProjectConfig!
 
-    init(parentWindow: NSWindow, data: ScanData) {
-        var x = 0.0
-        var y = 0.0
-
-        // Centrar el diálogo en la ventana principal
-        if let mainWindow = GlobalState.mainWindow {
-            x = mainWindow.frame.minX + (mainWindow.frame.width - 400) / 2
-            y = mainWindow.frame.minY + (mainWindow.frame.height - 200) / 2
-            print("x: \(x), y: \(y)")
-        }
-
+    init(_ config: ProjectConfig, data: ScanData) {
         super.init(
-            contentRect: NSRect(x: x, y: y, width: 400, height: 0),
+            contentRect: config.windowFrames[1],
             styleMask: [.titled, .closable, .resizable],
             backing: .buffered,
             defer: false
         )
         title = "Create New Volume"
         scanData = data
-
-        // // Centrar el diálogo en la ventana principal
-        // if let mainWindow = GlobalState.mainWindow {
-        //     let parentX = mainWindow.frame.minX
-        //     let parentY = mainWindow.frame.minY
-        //     print("parent x: \(parentX), parent y: \(parentY)")
-
-        //     let x = parentX + (mainWindow.frame.width - frame.width) / 2
-        //     let y = parentY + (mainWindow.frame.height - frame.height) / 2
-        //     print("x: \(x), y: \(y)")
-
-        //     setFrameOrigin(NSPoint(x: x, y: y))
-        //     // self.frame.minX = x
-        //     // self.frame.minY = y
-        // } else {
-        //     if let parentFrame = parentWindow.screen?.visibleFrame {
-        //         let x = parentFrame.origin.x + (parentFrame.width - frame.width) / 2
-        //         let y = parentFrame.origin.y + (parentFrame.height - frame.height) / 2
-        //         setFrameOrigin(NSPoint(x: x, y: y))
-        //     }
-        // }
+        self.config = config
 
         // Crear un grid view para las etiquetas y campos de texto
         let gridView = NSGridView()
@@ -136,6 +107,7 @@ class CreateVolumeDialog: NSWindow {
         nameField.stringValue = ""
         volumeField.stringValue = ""
         foldersField.stringValue = "*"
+        config.updateWindowFrame(n: 1, with: frame)
     }
 
     // Manejar la tecla Escape para cerrar el diálogo
@@ -168,10 +140,6 @@ class CreateVolumeDialog: NSWindow {
         let name = nameField.stringValue.trimSpaces()
         let volume = volumeField.stringValue.trimSpaces()
         let folders = foldersField.stringValue.trimSpaces()
-
-        // let name = nameField.stringValue.trimmingCharacters(in: .whitespaces)
-        // let volume = volumeField.stringValue.trimmingCharacters(in: .whitespaces)
-        // let folders = foldersField.stringValue.trimmingCharacters(in: .whitespaces)
 
         print("OK button name: \(name)")
         print("OK button volume: \(volume)")

@@ -6,14 +6,18 @@ enum Language: Codable {
 }
 
 class ProjectConfig: NSObject, Codable {
-    var windowFrame: NSRect
+    var windowFrames: [NSRect]
     var language: Language
     var lastDataFile: URL?
     var loadLast: Bool
     var defaultDataDir: URL?
 
     override init() {
-        windowFrame = NSRect(x: 100, y: 100, width: 400, height: 300)
+        windowFrames = [
+            NSRect(x: 100, y: 100, width: 400, height: 300), // main window
+            NSRect(x: 100, y: 100, width: 400, height: 200) // create volume dialog
+        ]
+
         language = .english
         lastDataFile = nil
         loadLast = true
@@ -52,6 +56,16 @@ class ProjectConfig: NSObject, Codable {
         } catch {
             print("No se pudo cargar la configuración: \(error)")
             return nil
+        }
+    }
+
+    @MainActor func updateWindowFrame(n: Int, with frame: NSRect) {
+        let myFrame = NSRect(
+            x: frame.minX, y: frame.minY, width: frame.width, height: frame.height - 28
+        )
+        if myFrame != windowFrames[n] {
+            windowFrames[n] = myFrame
+            GlobalState.configChanged = true
         }
     }
 }

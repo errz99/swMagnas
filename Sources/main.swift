@@ -34,7 +34,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         // Crear e inicializar la ventana principal con el marco cargado
-        mainWindow = MainWindow(frame: projectConfig.windowFrame)
+        mainWindow = MainWindow(projectConfig)
         mainWindow.makeKeyAndOrderFront(nil)
 
         if updateTitle {
@@ -53,12 +53,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_: Notification) {
         // Guardar la configuración al cerrarse la aplicación
-        let frame = mainWindow.frame
-        let myFrame = NSRect(
-            x: frame.minX, y: frame.minY, width: frame.width, height: frame.height - 28
-        )
-        if myFrame != projectConfig.windowFrame || GlobalState.configChanged {
-            projectConfig.windowFrame = myFrame
+        projectConfig.updateWindowFrame(n: 0, with: mainWindow.frame)
+        if GlobalState.configChanged {
             projectConfig.save()
         }
     }
